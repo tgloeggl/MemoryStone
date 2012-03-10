@@ -140,7 +140,7 @@ public class MemoryStonePlugin extends JavaPlugin {
         return myConfigs[0];
     }
 
-    public void saveCustomConfig() {
+    public void saveMyConfig() {
         if (myConfigs == null || myConfigFiles == null) {
             return;
         }

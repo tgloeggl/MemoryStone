@@ -194,21 +194,20 @@ public class StructureManager {
 
     private void saveDefaultStructureTypes() {
 
-//        File structureTypesFile = new File(this.plugin.getDataFolder(), this.structureTypes_filename);
-//        Configuration conf = new Configuration(structureTypesFile);
-//
-//        List<StructureType> types = new ArrayList<StructureType>();
-//        for (StructureListener listener : listeners) {
-//            listener.generatingDefaultStructureTypes(types);
-//        }
-//
-//        List<Object> yamllist = new ArrayList<Object>();
-//        for (StructureType structureType : types) {
-//            yamllist.add(structureType2yaml(structureType));
-//        }
-//
-//        conf.setProperty("structuretypes", yamllist);
-//        conf.save();
+        FileConfiguration conf = plugin.getMyConfig("structuretypes");
+
+        List<StructureType> types = new ArrayList<StructureType>();
+        for (StructureListener listener : listeners) {
+            listener.generatingDefaultStructureTypes(types);
+        }
+
+        List<Object> yamllist = new ArrayList<Object>();
+        for (StructureType structureType : types) {
+            yamllist.add(structureType2yaml(structureType));
+        }
+
+        conf.set("structuretypes", yamllist);
+        plugin.saveMyConfig();
     }
 
     private Map<String, Object> structureType2yaml(StructureType structuretype) {
@@ -284,8 +283,6 @@ public class StructureManager {
         for (Object node : nodelist) {
             Structure structure = this.yaml2Structure((LinkedHashMap<String, Object>)node);
 
-            // plugin.getServer().getLogger().warning("[MemoryStone] structure: " + structure);
-            
             if (structure == null) {
                 log.warning(logPrefix + "A structure couldn't be loaded");
             } else {
@@ -302,25 +299,24 @@ public class StructureManager {
 
     public void saveStructures() {
 
-//        File structuresfile = new File(this.plugin.getDataFolder(), this.structures_filename);
-//        Configuration conf = new Configuration(structuresfile);
-//
-//        List<Object> yamllist = new ArrayList<Object>();
-//
-//        for (Structure structure : this.structures) {
-//            Map<String, Object> structure2yaml = this.structure2yaml(structure);
-//
-//            for (StructureListener listener : listeners) {
-//                listener.structureSaving(structure, structure2yaml);
-//            }
-//
-//            yamllist.add(structure2yaml);
-//        }
-//
-//        log.info(logPrefix + "Saved " + this.structures.size() + " structures");
-//
-//        conf.setProperty("structures", yamllist);
-//        conf.save();
+        FileConfiguration conf = plugin.getMyConfig("structures");
+
+        List<Object> yamllist = new ArrayList<Object>();
+
+        for (Structure structure : this.structures) {
+            Map<String, Object> structure2yaml = this.structure2yaml(structure);
+
+            for (StructureListener listener : listeners) {
+                listener.structureSaving(structure, structure2yaml);
+            }
+
+            yamllist.add(structure2yaml);
+        }
+
+        log.info(logPrefix + "Saved " + this.structures.size() + " structures");
+
+        conf.set("structures", yamllist);
+        plugin.saveMyConfig();
     }
 
     private Map<String, Object> structure2yaml(Structure structure) {

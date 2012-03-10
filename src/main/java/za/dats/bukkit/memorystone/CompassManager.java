@@ -336,7 +336,7 @@ public class CompassManager implements Listener {
         }
         conf.set("memorized", memorizedNames);
         conf.set("selected", selected);
-        plugin.saveCustomConfig();
+        plugin.saveMyConfig();
     }
 
     public Teleport getTeleport(Player player) {
