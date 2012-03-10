@@ -1,10 +1,11 @@
 package za.dats.bukkit.memorystone.util;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.ConfigurationNode;
+// import org.bukkit.util.config.ConfigurationNode;
 
 import za.dats.bukkit.memorystone.util.structure.Structure;
 import za.dats.bukkit.memorystone.util.structure.StructureType;
@@ -36,7 +37,7 @@ public interface StructureListener {
      * 
      * @param structure
      */
-    public void structureLoaded(Structure structure, ConfigurationNode node);
+    public void structureLoaded(Structure structure, LinkedHashMap<String, Object> node);
 
     /**
      * Structure is being saved to disk, add extra structure information to save with it

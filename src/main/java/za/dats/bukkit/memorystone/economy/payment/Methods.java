@@ -10,7 +10,6 @@ import za.dats.bukkit.memorystone.economy.payment.methods.BOSE6;
 import za.dats.bukkit.memorystone.economy.payment.methods.BOSE7;
 import za.dats.bukkit.memorystone.economy.payment.methods.EE17;
 import za.dats.bukkit.memorystone.economy.payment.methods.MCUR;
-import za.dats.bukkit.memorystone.economy.payment.methods.iCo4;
 import za.dats.bukkit.memorystone.economy.payment.methods.iCo5;
 import za.dats.bukkit.memorystone.economy.payment.methods.iCo6;
 
@@ -49,7 +48,6 @@ public class Methods {
 	private static void _init() {
 		addMethod("iConomy", new iCo6());
 		addMethod("iConomy", new iCo5());
-		addMethod("iConomy", new iCo4());
 		addMethod("BOSEconomy", new BOSE6());
 		addMethod("BOSEconomy", new BOSE7());
 		addMethod("Essentials", new EE17());
