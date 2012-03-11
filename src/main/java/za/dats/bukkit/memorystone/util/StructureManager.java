@@ -1,6 +1,7 @@
 package za.dats.bukkit.memorystone.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -11,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import za.dats.bukkit.memorystone.util.structure.BlockOffset;
 import za.dats.bukkit.memorystone.util.structure.Rotator;
@@ -165,7 +166,9 @@ public class StructureManager {
 
     private void loadStructureTypes() {
 
-        FileConfiguration conf = this.plugin.getMyConfig("structuretypes");
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(
+                new File(plugin.getDataFolder(), this.structureTypes_filename));
+        
         ArrayList nodelist = (ArrayList)conf.get("structuretypes");
 
         for (Object node : nodelist) {
@@ -194,7 +197,8 @@ public class StructureManager {
 
     private void saveDefaultStructureTypes() {
 
-        FileConfiguration conf = plugin.getMyConfig("structuretypes");
+        File confFile = new File(plugin.getDataFolder(), this.structureTypes_filename);
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(confFile);
 
         List<StructureType> types = new ArrayList<StructureType>();
         for (StructureListener listener : listeners) {
@@ -207,7 +211,12 @@ public class StructureManager {
         }
 
         conf.set("structuretypes", yamllist);
-        plugin.saveMyConfig();
+        
+        try {
+            conf.save(confFile);
+        }  catch (IOException ex) {
+            plugin.getServer().getLogger().warning("[MemoryStone] Could not save config to " + this.structureTypes_filename);
+        }
     }
 
     private Map<String, Object> structureType2yaml(StructureType structuretype) {
@@ -277,7 +286,9 @@ public class StructureManager {
     // ---------- Structure loading/saving -----------------------
     public void loadStructures() {
 
-        FileConfiguration conf = this.plugin.getMyConfig("structures");
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(
+                new File(plugin.getDataFolder(), this.structures_filename));
+         
         ArrayList nodelist = (ArrayList)conf.get("structures");
 
         for (Object node : nodelist) {
@@ -299,7 +310,8 @@ public class StructureManager {
 
     public void saveStructures() {
 
-        FileConfiguration conf = plugin.getMyConfig("structures");
+        File confFile = new File(plugin.getDataFolder(), this.structures_filename);
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(confFile);
 
         List<Object> yamllist = new ArrayList<Object>();
 
@@ -316,7 +328,11 @@ public class StructureManager {
         log.info(logPrefix + "Saved " + this.structures.size() + " structures");
 
         conf.set("structures", yamllist);
-        plugin.saveMyConfig();
+        try {
+            conf.save(confFile);
+        }  catch (IOException ex) {
+            plugin.getServer().getLogger().warning("[MemoryStone] Could not save config to " + this.structures_filename);
+        }
     }
 
     private Map<String, Object> structure2yaml(Structure structure) {

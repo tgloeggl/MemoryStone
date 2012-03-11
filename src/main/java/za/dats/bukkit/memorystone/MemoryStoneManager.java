@@ -9,18 +9,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
-import org.bukkit.plugin.PluginManager;
-//import org.bukkit.util.config.ConfigurationNode;
-import org.bukkit.configuration.file.FileConfiguration;
+
 import za.dats.bukkit.memorystone.MemoryStone.StoneType;
-// import za.dats.bukkit.memorystone.economy.EconomyManager;
+import za.dats.bukkit.memorystone.economy.EconomyManager;
 import za.dats.bukkit.memorystone.util.StructureListener;
 import za.dats.bukkit.memorystone.util.structure.Rotator;
 import za.dats.bukkit.memorystone.util.structure.Structure;
@@ -105,19 +102,19 @@ public class MemoryStoneManager implements Listener, StructureListener {
         }
 
 
-//        if (node.getProperty("teleportCost") != null) {
-//            try {
-//                stone.setTeleportCost(Double.parseDouble(node.getString("teleportCost")));
-//            } catch (NumberFormatException e) {
-//            }
-//        }
-//
-//        if (node.getProperty("memorizeCost") != null) {
-//            try {
-//                stone.setMemorizeCost(Double.parseDouble(node.getString("memorizeCost")));
-//            } catch (NumberFormatException e) {
-//            }
-//        }
+        if (node.containsKey("teleportCost")) {
+            try {
+                stone.setTeleportCost(Double.parseDouble((String)node.get("teleportCost")));
+            } catch (NumberFormatException e) {
+            }
+        }
+
+        if (node.containsKey("memorizeCost")) {
+            try {
+                stone.setMemorizeCost(Double.parseDouble((String)node.get("memorizeCost")));
+            } catch (NumberFormatException e) {
+            }
+        }
 
 
         if (node.containsKey("signx")) {
@@ -128,14 +125,14 @@ public class MemoryStoneManager implements Listener, StructureListener {
                 Sign newSign = (Sign) new Location(structure.getWorld(), x, y, z).getBlock().getState();
 
                 // update price, if needed
-//                EconomyManager economyManager = memoryStonePlugin.getEconomyManager();
-//                if (economyManager.isEconomyEnabled()) {
-//                    newSign.setLine(2, economyManager.getFormattedCost(stone.getMemorizeCost()));
-//                    newSign.setLine(3, economyManager.getFormattedCost(stone.getTeleportCost()));
-//                } else {
+                EconomyManager economyManager = memoryStonePlugin.getEconomyManager();
+                if (economyManager.isEconomyEnabled()) {
+                    newSign.setLine(2, economyManager.getFormattedCost(stone.getMemorizeCost()));
+                    newSign.setLine(3, economyManager.getFormattedCost(stone.getTeleportCost()));
+                } else {
                     newSign.setLine(2, "");
                     newSign.setLine(3, "");
-                // }
+                }
                 stone.setSign(newSign);
 
             } catch (Exception e) {
@@ -477,7 +474,6 @@ public class MemoryStoneManager implements Listener, StructureListener {
             stone.setSign(state);
             stone.setName(name);
 
-            /*
             EconomyManager economyManager = memoryStonePlugin.getEconomyManager();
             if (economyManager.isEconomyEnabled()) {
                 if (Config.isEconomyAddCustomValue()) {
@@ -488,8 +484,6 @@ public class MemoryStoneManager implements Listener, StructureListener {
                 event.setLine(2, economyManager.getFormattedCost(stone.getMemorizeCost()));
                 event.setLine(3, economyManager.getFormattedCost(stone.getTeleportCost()));
             }
-            * 
-            */
 
             namedMap.put(name, stone);
             addWorldStone(stone);
@@ -510,8 +504,6 @@ public class MemoryStoneManager implements Listener, StructureListener {
                     }, 2);
             event.getPlayer().sendMessage(Utility.color(Config.getLang("signAdded")));
         }
-
-        // super.onSignChange(event);
     }
 
     public void updateSign(Sign s) {

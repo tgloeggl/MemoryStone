@@ -1,41 +1,32 @@
 package za.dats.bukkit.memorystone;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import java.io.IOException;
+import java.util.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
-// import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-// import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.getspout.spoutapi.event.input.KeyReleasedEvent;
 import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.keyboard.Keyboard;
 import za.dats.bukkit.memorystone.Config.MemoryEffect;
-// import za.dats.bukkit.memorystone.economy.EconomyManager;
+import za.dats.bukkit.memorystone.economy.EconomyManager;
 import za.dats.bukkit.memorystone.ui.LocationPopupListener;
-import java.util.LinkedHashSet;
+
 
 public class CompassManager implements Listener {
 
@@ -246,7 +237,6 @@ public class CompassManager implements Listener {
                 return true;
             }
 
-            /*
             EconomyManager economyManager = MemoryStonePlugin.getInstance().getEconomyManager();
             if (economyManager.isEconomyEnabled() && (!player.hasPermission("memorystone.usefree"))
                     && !economyManager.payMemorizeCost(player, stone)) {
@@ -255,8 +245,6 @@ public class CompassManager implements Listener {
                         economyManager.getFormattedCost(stone.getMemorizeCost())));
                 return true;
             }
-            * 
-            */
 
             Set<MemoryStone> set = memorized.get(player.getName());
             if (set == null) {
@@ -297,7 +285,8 @@ public class CompassManager implements Listener {
     }
 
     public void loadLocations() {
-        FileConfiguration conf = this.plugin.getMyConfig("locations");
+        File confFile = new File(plugin.getDataFolder(), this.locationsFile);
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(confFile);        
 
         MemorySection mem = (MemorySection)conf.get("memorized");
 
@@ -321,7 +310,8 @@ public class CompassManager implements Listener {
     }
 
     public void saveLocations() {
-        FileConfiguration conf = this.plugin.getMyConfig("locations");
+        File confFile = new File(plugin.getDataFolder(), this.locationsFile);
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(confFile);
 
         Map<String, Set<String>> memorizedNames = new HashMap<String, Set<String>>();
         for (String playerName : memorized.keySet()) {
@@ -336,7 +326,11 @@ public class CompassManager implements Listener {
         }
         conf.set("memorized", memorizedNames);
         conf.set("selected", selected);
-        plugin.saveMyConfig();
+        try {
+            conf.save(confFile);
+        }  catch (IOException ex) {
+            plugin.getServer().getLogger().warning("[MemoryStone] Could not save config to " + this.locationsFile);
+        }
     }
 
     public Teleport getTeleport(Player player) {
@@ -414,7 +408,6 @@ public class CompassManager implements Listener {
             }
         }
 
-        /*
         if (!caster.hasPermission("memorystone.usefree")) {
             EconomyManager economyManager = MemoryStonePlugin.getInstance().getEconomyManager();
             if (economyManager.isEconomyEnabled() && !economyManager.payTeleportCost(caster, stone)) {
@@ -423,8 +416,6 @@ public class CompassManager implements Listener {
                 return;
             }
         }
-        * 
-        */
 
         if (other.equals(caster)) {
             caster.sendMessage(Config.getColorLang("startrecall", "name", stone.getName()));
@@ -809,7 +800,6 @@ public class CompassManager implements Listener {
             }
         }
 
-        /*
         boolean messageSent = false;
         if (!player.hasPermission("memorystone.usefree")) {
             EconomyManager economyManager = MemoryStonePlugin.getInstance().getEconomyManager();
@@ -822,9 +812,9 @@ public class CompassManager implements Listener {
             }
         }
 
-        if (!messageSent) { */
+        if (!messageSent) {
             player.sendMessage(Config.getColorLang("select", "name", selectedName));
-        // }
+        }
 
         selected.put(player.getName(), selectedName);
         event.setCancelled(true);

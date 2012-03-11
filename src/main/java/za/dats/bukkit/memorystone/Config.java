@@ -1,16 +1,19 @@
 package za.dats.bukkit.memorystone;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import za.dats.bukkit.memorystone.MemoryStonePlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Config {
 
+    private final static String configFile = "configuration.yml";
     private static FileConfiguration conf;
-
+    
     public enum MemoryEffect {
 
         LIGHTNING_ON_CREATE("effects.lightningOnCreate"), LIGHTNING_ON_BREAK("effects.lightningOnBreak"), LIGHTNING_ON_TELEPORT_SOURCE(
@@ -24,22 +27,19 @@ public class Config {
     }
 
     public static void init(MemoryStonePlugin plugin) {
-        conf = plugin.getMyConfig("configuration");
 
-        /*
-        File file = new File(plugin.getDataFolder(), configFile);
-        conf = new Configuration(file);
-        if (file.exists()) {
-            conf.load();
-        }
+        File confFile = new File(plugin.getDataFolder(), configFile);
+        conf = YamlConfiguration.loadConfiguration(confFile);
 
         // Make sure we add new configuration options.
         boolean changed = setDefaults();
-        if (!file.exists() || changed) {
-            conf.save();
+        if (!confFile.exists() || changed) {
+            try {
+                conf.save(confFile);
+            }  catch (IOException ex) {
+                plugin.getServer().getLogger().warning("[MemoryStone] Could not save config to " + configFile);
+            }
         }
-        * 
-        */
     }
 
     private static boolean setDefaults() {

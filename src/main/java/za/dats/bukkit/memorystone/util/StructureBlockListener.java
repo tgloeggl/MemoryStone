@@ -2,25 +2,20 @@ package za.dats.bukkit.memorystone.util;
 
 import java.util.List;
 import java.util.Set;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.BlockBreakEvent;
-// import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-// import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import za.dats.bukkit.memorystone.Config;
 import za.dats.bukkit.memorystone.Config.MemoryEffect;
 import za.dats.bukkit.memorystone.MemoryStonePlugin;
-// import za.dats.bukkit.memorystone.economy.EconomyManager;
+import za.dats.bukkit.memorystone.economy.EconomyManager;
 import za.dats.bukkit.memorystone.util.structure.Structure;
 import za.dats.bukkit.memorystone.util.structure.StructureType;
 
@@ -158,18 +153,23 @@ public class StructureBlockListener implements Listener {
             }
 
 
-            /*
-             * EconomyManager economyManager =
-             * MemoryStonePlugin.getInstance().getEconomyManager(); if
-             * (economyManager.isEconomyEnabled() &&
-             * !player.hasPermission("memorystone.usefree")) { if
-             * (!economyManager.payBuildCost(player, structureType)) {
-             * player.sendMessage(Config.getColorLang("cantaffordbuild", "cost",
-             * economyManager.getBuildCostString(structureType))); if (event !=
-             * null) { event.setCancelled(true); } return null; } }
-             *
-             */
 
+            EconomyManager economyManager =
+                    MemoryStonePlugin.getInstance().getEconomyManager();
+            if (economyManager.isEconomyEnabled()
+                    && !player.hasPermission("memorystone.usefree")) {
+                if (!economyManager.payBuildCost(player, structureType)) {
+                    player.sendMessage(Config.getColorLang("cantaffordbuild", "cost",
+                            economyManager.getBuildCostString(structureType)));
+                    if (event
+                            != null) {
+                        event.setCancelled(true);
+                    }
+                    return null;
+                }
+            }
+
+            
             // lightning strike!
             if (Config.isEffectEnabled(MemoryEffect.LIGHTNING_ON_CREATE)) {
                 placedblock.getWorld().strikeLightningEffect(placedblock.getLocation());

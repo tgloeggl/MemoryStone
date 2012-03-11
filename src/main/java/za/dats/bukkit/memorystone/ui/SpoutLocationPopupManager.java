@@ -1,28 +1,16 @@
 package za.dats.bukkit.memorystone.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import java.util.*;
 import org.bukkit.entity.Player;
-// import org.bukkit.event.Event.Priority;
-// import org.bukkit.event.Event.Type;
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
-import org.getspout.spoutapi.gui.GenericButton;
-import org.getspout.spoutapi.gui.GenericLabel;
-import org.getspout.spoutapi.gui.GenericPopup;
-import org.getspout.spoutapi.gui.Widget;
-import org.getspout.spoutapi.gui.WidgetAnchor;
+import org.getspout.spoutapi.gui.*;
 import org.getspout.spoutapi.player.SpoutPlayer;
-
 import za.dats.bukkit.memorystone.MemoryStone;
-// import za.dats.bukkit.memorystone.economy.EconomyManager;
+import za.dats.bukkit.memorystone.MemoryStonePlugin;
+import za.dats.bukkit.memorystone.economy.EconomyManager;
 
 public class SpoutLocationPopupManager implements Listener {
 
@@ -66,9 +54,8 @@ public class SpoutLocationPopupManager implements Listener {
             pageLabel.setX(center).setY(heightScale * 12);
             popup.attachWidget(plugin, pageLabel);
 
-            // EconomyManager economyManager = MemoryStonePlugin.getInstance().getEconomyManager();
-            // boolean economyEnabled = economyManager.isEconomyEnabled() && !player.hasPermission("memorystone.usefree");
-            boolean economyEnabled = false;
+            EconomyManager economyManager = MemoryStonePlugin.getInstance().getEconomyManager();
+            boolean economyEnabled = economyManager.isEconomyEnabled() && !player.hasPermission("memorystone.usefree");
 
             for (int i = 0; i < PAGE_SIZE; i++) {
                 int currentEntry = i + (page * PAGE_SIZE);
@@ -84,7 +71,7 @@ public class SpoutLocationPopupManager implements Listener {
                 int buttonWidth = 30;
                 if (economyEnabled) {
                     buttonWidth = 45;
-                    name = stone.getName(); // + " ("+economyManager.getFormattedCost(stone.getTeleportCost())+")";
+                    name = stone.getName() + " ("+economyManager.getFormattedCost(stone.getTeleportCost())+")";
                 }
                 GenericButton locationButton = new GenericButton(name);
                 locationButton.setX(center - (widthScale * (buttonWidth + 5)) + (widthScale * col * (buttonWidth + 10))).setY(heightScale * (row + 2) * 13);
